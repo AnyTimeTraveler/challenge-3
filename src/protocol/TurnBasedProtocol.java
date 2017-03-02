@@ -10,7 +10,8 @@ import java.util.Random;
  */
 public class TurnBasedProtocol implements IMACProtocol {
 
-    private static final int QUEUE_LENGTH = 10;
+    public static final int NODE_COUNT = 6;
+    private static final int QUEUE_LENGTH = 5;
     private static final int NEXT_TURN = -1;
     private boolean turnInitialized;
 
@@ -38,7 +39,7 @@ public class TurnBasedProtocol implements IMACProtocol {
         if (turnMode) {
             return sendTurnBased(previousMediumState, controlInformation, localQueueLength);
         }
-        if (controlInformation == 4) {
+        if (controlInformation == NODE_COUNT) {
             turnMode = true;
         }
         if (id == 0) {
@@ -55,7 +56,7 @@ public class TurnBasedProtocol implements IMACProtocol {
             } else {
                 return sendRandom(previousMediumState, controlInformation, localQueueLength);
             }
-        } else if (nextId != 5) {
+        } else if (nextId != NODE_COUNT + 1) {
             if (previousMediumState.equals(MediumState.Succes)) {
                 nextId++;
             }
@@ -69,7 +70,7 @@ public class TurnBasedProtocol implements IMACProtocol {
     private TransmissionInfo sendRandom(MediumState previousMediumState, int controlInformation, int localQueueLength) {
         System.out.print("STATE: " + previousMediumState + "    Info: " + controlInformation +
                                  "    Queue: " + localQueueLength + "    ID: null    Sending: ");
-        if (random.nextInt(100) <= 25 * nextId) {
+        if (random.nextInt(100) <= (100 / NODE_COUNT) * nextId) {
             System.out.println("true");
             lastAction = Action.SENDING;
             if (localQueueLength > 0) {
@@ -96,13 +97,13 @@ public class TurnBasedProtocol implements IMACProtocol {
             turnInitialized = false;
             if (controlInformation == NEXT_TURN && !justHadMyTurn) {
                 System.out.print("    Old Turn: " + currentTurn);
-                currentTurn = currentTurn + 1 == 5 ? 1 : currentTurn + 1;
+                currentTurn = currentTurn + 1 == NODE_COUNT + 1 ? 1 : currentTurn + 1;
                 System.out.println("    New Turn: " + currentTurn);
-            }else{
+            } else {
                 justHadMyTurn = false;
                 System.out.println();
             }
-            if (currentTurn == id){
+            if (currentTurn == id) {
                 justHadMyTurn = true;
                 return doMyTurn(localQueueLength);
             }
@@ -117,7 +118,7 @@ public class TurnBasedProtocol implements IMACProtocol {
         }
         System.out.println("    My turn: " + id + "    Queue: " + partialQueue);
         if (--partialQueue <= 0 || localQueueLength <= 1) {
-            currentTurn = currentTurn + 1 == 5 ? 1 : currentTurn + 1;
+            currentTurn = currentTurn + 1 == NODE_COUNT + 1 ? 1 : currentTurn + 1;
         }
         if (localQueueLength > 0) {
             return new TransmissionInfo(TransmissionType.Data, partialQueue == 0 ? NEXT_TURN : partialQueue);
