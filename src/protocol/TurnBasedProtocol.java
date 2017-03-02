@@ -11,7 +11,7 @@ import java.util.Random;
 public class TurnBasedProtocol implements IMACProtocol {
 
     // Optimal so far is: 7
-    private static final int QUEUE_LENGTH = 8;
+    private static int QUEUE_LENGTH = 7;
     // Control Signal that announces the next turn
     private static final int NEXT_TURN = -1;
     // Needs to match the amount of clients you are working with!
@@ -48,6 +48,12 @@ public class TurnBasedProtocol implements IMACProtocol {
         // method used by a custom starter I wrote, because I was too lazy to start 4 programs,
         // so instead I just start my program once.
         NODE_COUNT = nodeCount;
+    }
+
+    public static void setQueueLength(int queueLength) {
+        // method used by a custom starter I wrote, because I was too lazy to start 4 programs,
+        // so instead I just start my program once.
+        QUEUE_LENGTH = queueLength;
     }
 
     @Override

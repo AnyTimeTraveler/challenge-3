@@ -18,24 +18,34 @@ public class MyProgram {
     private static MACChallengeClient[] clients = new MACChallengeClient[NODE_COUNT];
 
     public static void main(String[] args) {
+        // This is my own version of the file Program.java
+        // I run it when I don't care about the programs output and want to save myself some work.
+
+        if (args.length == 1) {
+            // Set the QueueLength from the first parameter, if it exists
+            TurnBasedProtocol.setQueueLength(Integer.parseInt(args[0]));
+        }
+
+        // Hardcoded things
         String password = "cfvhujawslp;lp;e4rnjmgyhe4r";
         String serverAddress = "netsys.student.utwente.nl";
         int groupId = 1802607;
         int serverPort = 8001;
+
+        // Set the node-count in case it's not 4
         TurnBasedProtocol.setNodeCount(NODE_COUNT);
 
         try {
             System.out.print("Starting client... ");
 
-            // Create the client
-
+            // create clients in a for-loop
             for (int i = 0; i < clients.length; i++) {
                 clients[i] = new MACChallengeClient(serverAddress, serverPort, groupId, password);
                 clients[i].setListener(new TurnBasedProtocol());
             }
             System.out.println("Done.");
 
-            // Start System
+            // start the system
             clients[0].requestStart();
 
             System.out.println("Simulation started!");
@@ -45,8 +55,7 @@ public class MyProgram {
                 Thread.sleep(100);
             }
 
-            System.out
-                    .println("Simulation finished! Check your performance on the server web interface.");
+            System.out.println("Simulation finished! Check your performance on the server web interface.");
 
         } catch (IOException e) {
             System.out.print("Could not start the client, because: ");
@@ -58,7 +67,7 @@ public class MyProgram {
             System.out.print("Unexpected Exception: ");
             e.printStackTrace();
         } finally {
-
+            // shutdown all clients
             for (MACChallengeClient client : clients) {
                 if (client != null) {
                     System.out.print("Shutting down client0... ");
