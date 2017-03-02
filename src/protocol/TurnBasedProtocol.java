@@ -102,6 +102,10 @@ public class TurnBasedProtocol implements IMACProtocol {
                 justHadMyTurn = false;
                 System.out.println();
             }
+            if (currentTurn == id){
+                justHadMyTurn = true;
+                return doMyTurn(localQueueLength);
+            }
             return new TransmissionInfo(TransmissionType.Silent, 0);
         }
     }
