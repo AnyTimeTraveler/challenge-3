@@ -10,7 +10,7 @@ import java.util.Random;
  */
 public class TurnBasedProtocol implements IMACProtocol {
 
-    public static final int NODE_COUNT = 6;
+    public static int NODE_COUNT = -1;
     private static final int QUEUE_LENGTH = 5;
     private static final int NEXT_TURN = -1;
     private boolean turnInitialized;
@@ -32,6 +32,10 @@ public class TurnBasedProtocol implements IMACProtocol {
         this.partialQueue = 0;
         this.turnMode = false;
         this.turnInitialized = false;
+    }
+
+    public static void setNodeCount(int nodeCount){
+        NODE_COUNT = nodeCount;
     }
 
     @Override
